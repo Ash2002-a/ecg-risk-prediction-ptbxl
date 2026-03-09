@@ -9,5 +9,4 @@ env/
 *.swp
 *.swo
 *.log
-outputs/models/
-outputs/figures/
+
