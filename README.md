@@ -1,16 +1,25 @@
 # Deep Learning for ECG-Based Cardiovascular Risk Prediction
 
-Implementation of a deep learning pipeline for cardiovascular abnormality detection from 12-lead ECG signals using the **PTB-XL clinical dataset**.
+This repository implements a deep learning pipeline for cardiovascular abnormality detection from 12-lead electrocardiogram (ECG) signals using the **PTB-XL clinical dataset**.
 
-This repository contains a compact research prototype for deep learning–based ECG classification using the PTB-XL clinical dataset.
-
-This project explores how deep learning models can learn clinically relevant cardiac patterns directly from raw electrocardiogram (ECG) waveforms.
+The project explores how neural networks can learn clinically relevant cardiac patterns directly from raw ECG waveforms, including dataset preparation, diagnostic label mapping, multi-label classification, evaluation using ROC-AUC, and gradient-based saliency visualisation for model interpretability.
 
 ---
+## Repository Overview
+
+This repository implements a complete pipeline for ECG-based cardiovascular abnormality detection using the PTB-XL dataset.
+
+Key entry points:
+
+- `src/train.py` — train the ECG classification model  
+- `src/evaluate.py` — evaluate the trained model using ROC-AUC and threshold-based metrics  
+- `src/predict.py` — run inference on an example ECG recording  
+- `src/saliency.py` — generate gradient-based saliency visualisations
 
 ## Dataset
 
-**PTB-XL (PhysioNet)**
+**PTB-XL (PhysioNet)**  
+[Dataset Link](https://physionet.org/content/ptb-xl/1.0.3/)
 
 - 21,799 clinical 12-lead ECG recordings  
 - 10-second recordings  
@@ -53,7 +62,6 @@ A **Residual 1D Convolutional Neural Network** was implemented in PyTorch for mu
 ```
 
 ---
-
 ## Results
 
 Training was performed on a downloaded PTB-XL subset using the dataset's predefined patient-stratified folds:
@@ -64,20 +72,22 @@ Training was performed on a downloaded PTB-XL subset using the dataset's predefi
 
 The dataset split follows the **patient-stratified folds provided with PTB-XL**, ensuring that recordings from the same patient do not appear across training and evaluation sets.
 
+Evaluation metrics include **ROC-AUC for probabilistic ranking** and **threshold-based precision, recall, and F1 scores** to assess discrete multi-label predictions on the held-out test subset.
+
 ### Test Performance
 
 ```text
-Macro ROC-AUC ≈ 0.8517
+Macro ROC-AUC ≈ 0.85
 ```
 
 ### Class-wise ROC-AUC
 
 ```
-NORM AUC ≈ 0.8682
-MI   AUC ≈ 0.7262
-STTC AUC ≈ 0.8308
-CD   AUC ≈ 0.9000
-HYP  AUC ≈ 0.9333
+NORM AUC ≈ 0.87
+MI   AUC ≈ 0.73
+STTC AUC ≈ 0.83
+CD   AUC ≈ 0.90
+HYP  AUC ≈ 0.93
 ```
 
 These results reflect evaluation on a small downloaded subset of PTB-XL and are intended as a proof-of-concept rather than a full benchmark on the complete dataset.
