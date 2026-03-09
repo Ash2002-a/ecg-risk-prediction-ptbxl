@@ -22,9 +22,26 @@ class ResidualBlock1D(nn.Module):
         return out
 
 
+class LeadAttention(nn.Module):
+    def __init__(self, num_leads=12):
+        super().__init__()
+        self.pool = nn.AdaptiveAvgPool1d(1)
+        self.fc = nn.Linear(num_leads, num_leads)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        weights = self.pool(x).squeeze(-1)
+        weights = self.fc(weights)
+        weights = self.sigmoid(weights)
+        weights = weights.unsqueeze(-1)
+        return x * weights
+
+
 class ECGCNN(nn.Module):
     def __init__(self, num_classes=5):
         super().__init__()
+
+        self.lead_attention = LeadAttention(num_leads=12)
 
         self.stem = nn.Sequential(
             nn.Conv1d(in_channels=12, out_channels=32, kernel_size=7, padding=3),
@@ -59,6 +76,7 @@ class ECGCNN(nn.Module):
         )
 
     def forward(self, x):
+        x = self.lead_attention(x)
         x = self.stem(x)
         x = self.layer1(x)
         x = self.resblock(x)
